@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetheris Academy | B.Sc. Nursing Student Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .gradient-glow { background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.15), transparent 50%); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between gradient-glow selection:bg-blue-600 selection:text-white">
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-xl px-4">
+        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-8 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500"></div>
+            
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 mb-5 text-3xl shadow-inner">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            
+            <h2 class="text-2xl font-extrabold text-white tracking-tight mb-1">Aetheris Academy</h2>
+            <p class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-6">by Skylinesyntax Enterprises</p>
+            
+            <p class="text-xs text-slate-300 mb-6 bg-slate-800/60 p-3.5 rounded-xl border border-slate-700/60 leading-relaxed">
+                Welcome B.Sc. Nursing Students! Enter your name and batch access password to open your semester portal.
+            </p>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Student Full Name</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500"><i class="fa-solid fa-user text-xs"></i></span>
+                        <input type="text" id="usernameInput" required placeholder="e.g. Priya Sharma" class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Access Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500"><i class="fa-solid fa-lock text-xs"></i></span>
+                        <input type="password" id="passwordInput" required placeholder="Enter batch password" class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition">
+                    </div>
+                </div>
+                
+                <div id="loginError" class="text-rose-400 text-xs bg-rose-950/40 border border-rose-900/60 p-2.5 rounded-lg hidden text-center">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Incorrect password! Use <code class="text-white font-mono">nursing2026</code>
+                </div>
+                
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl transition shadow-lg shadow-blue-600/30 text-sm cursor-pointer mt-2 flex items-center justify-center">
+                    <span>Enter Student Portal</span> <i class="fa-solid fa-arrow-right-long ml-2"></i>
+                </button>
+            </form>
+            
+            <div class="mt-8 pt-6 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-phone text-blue-400"></i>
+                <span>Helpline / Query:</span> 
+                <a href="tel:+917626915690" class="text-white font-bold hover:text-blue-400 transition">+91 7626915690</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD (Hidden initially) -->
+    <div id="mainPortal" class="hidden flex-1 flex flex-col">
+        <!-- Top Navbar -->
+        <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-40 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+                <div class="flex items-center space-x-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-600/30">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-white text-base sm:text-lg leading-none tracking-tight">Aetheris Academy</h1>
+                        <p class="text-[11px] font-semibold text-blue-400 mt-0.5 tracking-wider uppercase">Skylinesyntax Enterprises</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden sm:block bg-slate-800/60 px-4 py-2 rounded-xl border border-slate-700/60">
+                        <div id="displayUsername" class="text-xs font-bold text-white flex items-center justify-end space-x-1.5">
+                            <i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i>
+                            <span>Student</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-medium">B.Sc. Nursing 2nd Semester</div>
+                    </div>
+                    <button onclick="handleLogout()" class="px-3.5 py-2 bg-slate-800 hover:bg-rose-900/40 hover:text-rose-300 hover:border-rose-800/60 border border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition cursor-pointer flex items-center space-x-1.5">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span class="hidden sm:inline">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-slate-900/60 border-b border-slate-800/80 sticky top-18 z-30 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 sm:space-x-4 overflow-x-auto py-2.5 scrollbar-none">
+                <button onclick="switchTab('schedule')" id="btn-schedule" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition bg-blue-600 text-white whitespace-nowrap cursor-pointer shadow-lg shadow-blue-600/20 flex items-center space-x-2">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Master Schedule</span>
+                </button>
+                <button onclick="switchTab('classes')" id="btn-classes" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-300 hover:bg-slate-800/80 whitespace-nowrap cursor-pointer flex items-center space-x-2">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Class Notes & PDFs</span>
+                </button>
+                <button onclick="switchTab('tests')" id="btn-tests" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-300 hover:bg-slate-800/80 whitespace-nowrap cursor-pointer flex items-center space-x-2">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <span>Tests & Question Papers</span>
+                </button>
+                <button onclick="switchTab('calendar')" id="btn-calendar" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-300 hover:bg-slate-800/80 whitespace-nowrap cursor-pointer flex items-center space-x-2">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Full Holiday Calendar</span>
+                </button>
+                <button onclick="switchTab('updates')" id="btn-updates" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-300 hover:bg-slate-800/80 whitespace-nowrap cursor-pointer flex items-center space-x-2">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>Updates & Announcements</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+            
+            <!-- REAL-TIME DYNAMIC TODAY, TOMORROW & UPCOMING TEST WIDGETS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Today's Class Card -->
+                <div class="bg-gradient-to-br from-blue-950/80 to-slate-900 p-6 rounded-3xl border border-blue-500/30 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-2.5 py-1 bg-blue-500/20 text-blue-400 text-xs font-bold rounded-lg flex items-center space-x-1">
+                            <i class="fa-solid fa-calendar-day mr-1"></i> Today's Class
+                        </span>
+                        <span id="todayDate" class="text-[11px] text-slate-400 font-mono">--</span>
+                    </div>
+                    <div id="todayClassContent">
+                        <h3 class="text-base font-bold text-white mb-1" id="todaySubject">Loading...</h3>
+                        <p class="text-xs text-slate-300 mb-3" id="todayTopic">Checking schedule...</p>
+                        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                            <span id="todayHours"><i class="fa-solid fa-clock mr-1 text-blue-400"></i> --</span>
+                            <span id="todayType" class="px-2 py-0.5 rounded bg-blue-950 text-blue-300 font-semibold">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tomorrow's Class Card -->
+                <div class="bg-gradient-to-br from-indigo-950/80 to-slate-900 p-6 rounded-3xl border border-indigo-500/30 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-indigo-500"></div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-2.5 py-1 bg-indigo-500/20 text-indigo-400 text-xs font-bold rounded-lg flex items-center space-x-1">
+                            <i class="fa-solid fa-calendar-plus mr-1"></i> Tomorrow's Class
+                        </span>
+                        <span id="tomorrowDate" class="text-[11px] text-slate-400 font-mono">--</span>
+                    </div>
+                    <div id="tomorrowClassContent">
+                        <h3 class="text-base font-bold text-white mb-1" id="tomorrowSubject">Loading...</h3>
+                        <p class="text-xs text-slate-300 mb-3" id="tomorrowTopic">Checking schedule...</p>
+                        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                            <span id="tomorrowHours"><i class="fa-solid fa-clock mr-1 text-indigo-400"></i> --</span>
+                            <span id="tomorrowType" class="px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 font-semibold">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Test Card -->
+                <div class="bg-gradient-to-br from-emerald-950/80 to-slate-900 p-6 rounded-3xl border border-emerald-500/30 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-lg flex items-center space-x-1">
+                            <i class="fa-solid fa-file-circle-check mr-1"></i> Upcoming Test
+                        </span>
+                        <span id="testDaysLeft" class="text-[11px] text-emerald-400 font-bold">--</span>
+                    </div>
+                    <div id="testContent">
+                        <h3 class="text-base font-bold text-white mb-1" id="testTitle">Loading...</h3>
+                        <p class="text-xs text-slate-300 mb-3" id="testDesc">Checking assessment schedule.</p>
+                        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+                            <span id="testDate"><i class="fa-regular fa-calendar mr-1 text-emerald-400"></i> --</span>
+                            <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-semibold">2 Hours Assessment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1: MASTER SCHEDULE -->
+            <div id="tab-schedule" class="tab-content space-y-6">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-8 rounded-3xl border border-slate-700/80 shadow-2xl relative overflow-hidden">
+                    <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-blue-600/10 blur-3xl pointer-events-none"></div>
+                    <div class="space-y-2">
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold rounded-full">Academic Session 2026-2027</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">B.Sc. Nursing 2nd Semester Master Teaching Schedule</h2>
+                        <p class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                            Comprehensive 84-hour curriculum running from <strong class="text-white">November 2, 2026 to January 10, 2027</strong>. Features interleaved daily classes, heavy emphasis on Anatomy & Physiology and Psychology, and bi-weekly Sunday test sessions.
+                        </p>
+                    </div>
+                    <a href="B.Sc. Nursing 2nd Semester Master Teaching Schedule.pdf" download class="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center space-x-2.5 shadow-lg shadow-emerald-600/30 whitespace-nowrap cursor-pointer">
+                        <i class="fa-solid fa-file-pdf text-base"></i>
+                        <span>Download PDF Master Schedule</span>
+                    </a>
+                </div>
+
+                <!-- Subject Summary Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-blue-500/50 transition">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-blue-500"></div>
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Anatomy & Physiology</div>
+                        <div class="text-3xl font-black text-blue-400 mt-2 mb-1">24 hrs</div>
+                        <div class="text-[11px] text-slate-500 font-medium">Core Subject (28.6% weight)</div>
+                    </div>
+                    
+                    <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-purple-500/50 transition">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-purple-500"></div>
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sociology</div>
+                        <div class="text-3xl font-black text-purple-400 mt-2 mb-1">12 hrs</div>
+                        <div class="text-[11px] text-slate-500 font-medium">Clinical Sociology (14.3%)</div>
+                    </div>
+                    
+                    <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-emerald-500/50 transition">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Psychology & Soft Skills</div>
+                        <div class="text-3xl font-black text-emerald-400 mt-2 mb-1">13 hrs</div>
+                        <div class="text-[11px] text-slate-500 font-medium">Cognitive & IPR (15.5%)</div>
+                    </div>
+                    
+                    <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-amber-500/50 transition">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-amber-500"></div>
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">English & LSRW</div>
+                        <div class="text-3xl font-black text-amber-400 mt-2 mb-1">15 hrs</div>
+                        <div class="text-[11px] text-slate-500 font-medium">Listening & Writing (17.9%)</div>
+                    </div>
+                    
+                    <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden group hover:border-rose-500/50 transition sm:col-span-2 lg:col-span-1">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-rose-500"></div>
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tests & Revisions</div>
+                        <div class="text-3xl font-black text-rose-400 mt-2 mb-1">20 hrs</div>
+                        <div class="text-[11px] text-slate-500 font-medium">Sunday Assessments (23.8%)</div>
+                    </div>
+                </div>
+
+                <!-- Schedule Table -->
+                <div class="bg-slate-900/90 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
+                    <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-extrabold text-white text-base">Complete Daily Teaching Schedule (All 70 Days)</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Showing scheduled classes, holidays, and Sunday assessment sessions.</p>
+                        </div>
+                        <span class="px-3 py-1 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl border border-slate-700">Nov 2, 2026 - Jan 10, 2027</span>
+                    </div>
+                    <div class="overflow-x-auto max-h-[600px]">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead class="sticky top-0 z-20">
+                                <tr class="bg-slate-950 text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[11px]">
+                                    <th class="p-4.5 font-bold">Date</th>
+                                    <th class="p-4.5 font-bold">Day</th>
+                                    <th class="p-4.5 font-bold">Subject</th>
+                                    <th class="p-4.5 font-bold">Topic / Unit Content</th>
+                                    <th class="p-4.5 font-bold text-center">Hours</th>
+                                    <th class="p-4.5 font-bold">Session Type</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-02</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Endocrine System: Hypothalamus, Pineal Gland, Pituitary gland</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-03</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit III: Attentive Listening in hypothetical situations, announcements</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-04</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Endocrine System: Thyroid, Parathyroid, Thymus</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-05</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-purple-400 font-semibold">Sociology</td><td class="p-4.5 text-slate-200">Social Organization: Meaning, elements and types</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-06</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Endocrine System: Pancreas and Adrenal glands</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-rose-950/30 border-l-4 border-rose-500 font-semibold text-rose-300"><td class="p-4.5 font-mono text-slate-400">2026-11-07</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-rose-400">Holiday</td><td class="p-4.5 text-slate-200">Diwali Festival Holiday (No Classes)</td><td class="p-4.5 text-center font-bold">0</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-rose-900/60 border border-rose-700 text-rose-200 text-[10px] font-bold">Festival</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-11-08</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-08)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-09</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Sensory Organs: Structure of skin and eye</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-10</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Speaking - Conversation situations (informal, formal)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-11</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Sensory Organs: Structure of ear, nose and tongue</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-12</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-purple-400 font-semibold">Sociology</td><td class="p-4.5 text-slate-200">Voluntary associations & Social system (definition, role, status)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-13</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Sensory Organs: Application and implications in nursing</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-14</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Musculoskeletal System: Anatomical positions & bones types</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-11-15</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-15)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-16</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Musculoskeletal System: Structure, growth and ossification</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-17</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Greetings, introductions, requesting, asking/giving permission</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-18</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Musculoskeletal System: Axial and appendicular skeleton</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-19</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-purple-400 font-semibold">Sociology</td><td class="p-4.5 text-slate-200">Social control: meaning, aims and process; Social norms</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-20</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Musculoskeletal System: Joints - classification & major joints</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-21</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Musculoskeletal System: Application and implications in nursing</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-11-22</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-22)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-23</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Muscular System: Types and structure of muscles</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-rose-950/30 border-l-4 border-rose-500 font-semibold text-rose-300"><td class="p-4.5 font-mono text-slate-400">2026-11-24</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-rose-400">Holiday</td><td class="p-4.5 text-slate-200">Guru Nanak Jayanti Festival Holiday (No Classes)</td><td class="p-4.5 text-center font-bold">0</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-rose-900/60 border border-rose-700 text-rose-200 text-[10px] font-bold">Festival</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-25</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Muscular System: Muscle groups of head, neck, thorax, abdomen</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-26</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-purple-400 font-semibold">Sociology</td><td class="p-4.5 text-slate-200">Social disorganization: definition, causes, control and planning</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-27</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Principal muscles: deltoid, biceps, triceps, respiratory</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-28</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Major muscles involved in nursing procedures & application</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-11-29</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-29)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-11-30</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Renal System: Structure of kidney, ureters, bladder, urethra</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-01</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Renal System: Application and implication in nursing</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-02</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Reproductive System: Structure of male & female organs</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-03</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Reproductive System: Structure of breast and nursing implications</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-04</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Nervous System: Review of neurons, CNS, ANS, and PNS</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-05</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Nervous System: Structure of brain, spinal cord, cranial nerves</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-12-06</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-06)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-07</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Nervous System: Peripheral nerves, cerebral cortex functional areas</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-08</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-blue-400 font-semibold">Anatomy & Physiology</td><td class="p-4.5 text-slate-200">Nervous System: Ventricular system (formation, circulation)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-09</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Asking for information, giving instructions, directions</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-10</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Agreeing/disagreeing, describing people, places, events</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-11</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Complaints, suggestions, telephone conversations</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-12</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Talking to patients, doctor/nurse rounds, handoffs</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-12-13</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-13)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-14</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit V: Reading strategies, reading notes, messages, articles</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-15</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit V: Medical vocabulary, abbreviations, visuals & graphs</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-16</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit V: Patient documents, doctor's prescription of care</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-17</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit V: Remedial grammar, spotting errors, grammar interpretation</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-18</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit VII: Combining LSRW skills - critical thinking, oral reports</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-19</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit III: Attentive Listening in hypothetical situations, announcements</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-12-20</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-20)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-21</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Speaking - Conversation situations (informal, formal)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-22</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Greetings, introductions, requesting, asking/giving permission</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-23</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Asking for information, giving instructions, directions</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="bg-rose-950/30 border-l-4 border-rose-500 font-semibold text-rose-300"><td class="p-4.5 font-mono text-slate-400">2026-12-24</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-rose-400">Holiday</td><td class="p-4.5 text-slate-200">Christmas Eve Holiday Break</td><td class="p-4.5 text-center font-bold">0</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-rose-900/60 border border-rose-700 text-rose-200 text-[10px] font-bold">Festival</span></td></tr>
+                                <tr class="bg-rose-950/30 border-l-4 border-rose-500 font-semibold text-rose-300"><td class="p-4.5 font-mono text-slate-400">2026-12-25</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-rose-400">Holiday</td><td class="p-4.5 text-slate-200">Christmas Day Festival Holiday (No Classes)</td><td class="p-4.5 text-center font-bold">0</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-rose-900/60 border border-rose-700 text-rose-200 text-[10px] font-bold">Festival</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-26</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-amber-400 font-semibold">English</td><td class="p-4.5 text-slate-200">Unit IV: Agreeing/disagreeing, describing people, places, events</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Practice</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2026-12-27</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-27)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-28</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Cognitive processes: Attention (types, determinants, alterations)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-29</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Cognitive processes: Perception (meaning, principles, factors)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-30</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Cognitive processes: Intelligence (heredity/environment, tests)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2026-12-31</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Cognitive processes: Learning (definition, types, habit formation)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-rose-950/30 border-l-4 border-rose-500 font-semibold text-rose-300"><td class="p-4.5 font-mono text-slate-400">2027-01-01</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-rose-400">Holiday</td><td class="p-4.5 text-slate-200">New Year's Day Festival Holiday (No Classes)</td><td class="p-4.5 text-center font-bold">0</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-rose-900/60 border border-rose-700 text-rose-200 text-[10px] font-bold">Festival</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2027-01-02</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Cognitive processes: Thinking (levels, reasoning, problem solving)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2027-01-03</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2027-01-03)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2027-01-04</td><td class="p-4.5 font-bold text-white">Monday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Cognitive processes: Aptitude (concept, types, individual differences)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2027-01-05</td><td class="p-4.5 font-bold text-white">Tuesday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Application of Soft Skills: Concept, types (visual, aural)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2027-01-06</td><td class="p-4.5 font-bold text-white">Wednesday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Soft Skills: Interpersonal Relationships (IPR), barriers, strategies</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2027-01-07</td><td class="p-4.5 font-bold text-white">Thursday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Soft Skills: Survival strategies (time management, stress coping)</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2027-01-08</td><td class="p-4.5 font-bold text-white">Friday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Soft Skills at workplace: Presentation skills, etiquette, teamwork</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="hover:bg-slate-800/40 transition"><td class="p-4.5 font-mono text-slate-400">2027-01-09</td><td class="p-4.5 font-bold text-white">Saturday</td><td class="p-4.5 text-emerald-400 font-semibold">Psychology</td><td class="p-4.5 text-slate-200">Self-Empowerment: Dimensions, women's empowerment, grooming</td><td class="p-4.5 text-center font-bold">1</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-blue-950 border border-blue-800/60 text-blue-300 text-[10px] font-bold">Lecture</span></td></tr>
+                                <tr class="bg-emerald-950/20 border-l-4 border-emerald-500 font-semibold"><td class="p-4.5 font-mono text-slate-400">2027-01-10</td><td class="p-4.5 font-bold text-white">Sunday</td><td class="p-4.5 text-emerald-300">Assessment / Doubt</td><td class="p-4.5 text-slate-200">Sunday Review, Quiz & Doubt Clearing Session (Week ending 2027-01-10)</td><td class="p-4.5 text-center font-bold">2</td><td class="p-4.5"><span class="px-2.5 py-1 rounded-lg bg-emerald-900/60 border border-emerald-700 text-emerald-200 text-[10px] font-bold">Test & Doubt</span></td></tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: CLASSES & NOTES -->
+            <div id="tab-classes" class="tab-content hidden space-y-6">
+                <div class="bg-slate-900/90 p-8 rounded-3xl border border-slate-800 text-center space-y-4">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 text-2xl mb-1">
+                        <i class="fa-solid fa-person-digging"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-white">Class Notes & PDFs Coming Soon!</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+                        We are currently preparing detailed, high-yield lecture slides, unit notes, and clinical summaries for B.Sc. Nursing 2nd Semester. They will be uploaded here shortly.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-bold rounded-xl inline-flex items-center space-x-2">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Expected Release: Nov 1, 2026</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: TESTS & QUESTION PAPERS -->
+            <div id="tab-tests" class="tab-content hidden space-y-6">
+                <div class="bg-slate-900/90 p-8 rounded-3xl border border-slate-800 text-center space-y-4">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-600/10 border border-emerald-500/20 text-emerald-400 text-2xl mb-1">
+                        <i class="fa-solid fa-file-circle-check"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-white">Tests & Question Papers Coming Soon!</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+                        Bi-weekly Sunday test question papers, practice quizzes, and verified answer keys will be published here right after each assessment session.
+                    </p>
+                    <div class="pt-2">
+                        <span class="px-4 py-2 bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold rounded-xl inline-flex items-center space-x-2">
+                            <i class="fa-solid fa-calendar-star"></i>
+                            <span>First Test: November 8, 2026</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: FULL HOLIDAY & ASSESSMENT CALENDAR -->
+            <div id="tab-calendar" class="tab-content hidden space-y-6">
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-8 rounded-3xl border border-slate-700/80 shadow-2xl">
+                    <h2 class="text-2xl font-extrabold text-white tracking-tight mb-1">Full Holiday & Assessment Calendar</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">Complete month-by-month breakdown of festival holidays, semester breaks, and bi-weekly Sunday assessments from November 2026 to January 2027.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- November 2026 Full Calendar -->
+                    <div class="bg-slate-900/90 p-6 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="font-extrabold text-white text-base">November 2026</h3>
+                            <span class="px-2.5 py-1 bg-blue-600/20 text-blue-400 text-[11px] font-bold rounded-lg">Full Month</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Nov 2 - 6</span>
+                                <span class="text-blue-400 font-bold">Anatomy & English Modules</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-rose-950/40 border border-rose-900/60 text-xs">
+                                <span class="text-rose-200 font-semibold">Nov 7 (Sat)</span>
+                                <span class="px-2 py-0.5 bg-rose-900 text-rose-200 font-bold rounded">Diwali Holiday</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/40 border border-emerald-900/60 text-xs">
+                                <span class="text-emerald-200 font-semibold">Nov 8 (Sun)</span>
+                                <span class="px-2 py-0.5 bg-emerald-900 text-emerald-200 font-bold rounded">Unit Test 1</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Nov 9 - 14</span>
+                                <span class="text-blue-400 font-bold">Sensory Organs & Sociology</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/40 border border-emerald-900/60 text-xs">
+                                <span class="text-emerald-200 font-semibold">Nov 15 (Sun)</span>
+                                <span class="px-2 py-0.5 bg-emerald-900 text-emerald-200 font-bold rounded">Unit Test 2</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Nov 16 - 23</span>
+                                <span class="text-blue-400 font-bold">Musculoskeletal System</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-rose-950/40 border border-rose-900/60 text-xs">
+                                <span class="text-rose-200 font-semibold">Nov 24 (Tue)</span>
+                                <span class="px-2 py-0.5 bg-rose-900 text-rose-200 font-bold rounded">Guru Nanak Jayanti</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/40 border border-emerald-900/60 text-xs">
+                                <span class="text-emerald-200 font-semibold">Nov 29 (Sun)</span>
+                                <span class="px-2 py-0.5 bg-emerald-900 text-emerald-200 font-bold rounded">Unit Test 3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- December 2026 Full Calendar -->
+                    <div class="bg-slate-900/90 p-6 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="font-extrabold text-white text-base">December 2026</h3>
+                            <span class="px-2.5 py-1 bg-blue-600/20 text-blue-400 text-[11px] font-bold rounded-lg">Full Month</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Dec 1 - 5</span>
+                                <span class="text-blue-400 font-bold">Muscular System & Renal</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Dec 6 (Sun)</span>
+                                <span class="text-slate-400 font-bold">Rest / Self-Study</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Dec 7 - 12</span>
+                                <span class="text-blue-400 font-bold">Reproductive & Nervous Sys</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/40 border border-emerald-900/60 text-xs">
+                                <span class="text-emerald-200 font-semibold">Dec 13 (Sun)</span>
+                                <span class="px-2 py-0.5 bg-emerald-900 text-emerald-200 font-bold rounded">Anatomy Test</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Dec 14 - 19</span>
+                                <span class="text-blue-400 font-bold">English LSRW Modules</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-rose-950/40 border border-rose-900/60 text-xs">
+                                <span class="text-rose-200 font-semibold">Dec 25 (Fri)</span>
+                                <span class="px-2 py-0.5 bg-rose-900 text-rose-200 font-bold rounded">Christmas Holiday</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/40 border border-emerald-900/60 text-xs">
+                                <span class="text-emerald-200 font-semibold">Dec 27 (Sun)</span>
+                                <span class="px-2 py-0.5 bg-emerald-900 text-emerald-200 font-bold rounded">English Review Test</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- January 2027 Full Calendar -->
+                    <div class="bg-slate-900/90 p-6 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="font-extrabold text-white text-base">January 2027</h3>
+                            <span class="px-2.5 py-1 bg-blue-600/20 text-blue-400 text-[11px] font-bold rounded-lg">Full Month</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-rose-950/40 border border-rose-900/60 text-xs">
+                                <span class="text-rose-200 font-semibold">Jan 1 (Fri)</span>
+                                <span class="px-2 py-0.5 bg-rose-900 text-rose-200 font-bold rounded">New Year's Day</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Jan 2 (Sat)</span>
+                                <span class="text-blue-400 font-bold">Psychology: Thinking</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/40 border border-emerald-900/60 text-xs">
+                                <span class="text-emerald-200 font-semibold">Jan 3 (Sun)</span>
+                                <span class="px-2 py-0.5 bg-emerald-900 text-emerald-200 font-bold rounded">Psychology Test</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
+                                <span class="text-slate-300 font-medium">Jan 4 - 9</span>
+                                <span class="text-blue-400 font-bold">Soft Skills & Empowerment</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-xl bg-blue-950/60 border border-blue-900/60 text-xs">
+                                <span class="text-blue-200 font-semibold">Jan 10 (Sun)</span>
+                                <span class="px-2 py-0.5 bg-blue-700 text-white font-bold rounded">Final Mock Exam</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: UPDATES & ANNOUNCEMENTS -->
+            <div id="tab-updates" class="tab-content hidden space-y-6">
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-8 rounded-3xl border border-slate-700/80 shadow-2xl">
+                    <h2 class="text-2xl font-extrabold text-white tracking-tight mb-1">Updates & Announcements</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">Important notices regarding semester classes, exam preparations, and holiday announcements.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-900/90 p-6 rounded-3xl border border-slate-800 border-l-4 border-l-blue-500 shadow-xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold rounded-lg">Academy Notice</span>
+                            <span class="text-xs text-slate-400 font-medium"><i class="fa-regular fa-calendar mr-1.5"></i> October 28, 2026</span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base sm:text-lg mb-2">B.Sc. Nursing 2nd Semester Master Schedule Released</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            All classes begin on November 2, 2026. Students are advised to download the PDF master schedule and prepare for Anatomy & Physiology and Psychology core modules.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-6 rounded-3xl border border-slate-800 border-l-4 border-l-emerald-500 shadow-xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold rounded-lg">Test Update</span>
+                            <span class="text-xs text-slate-400 font-medium"><i class="fa-regular fa-calendar mr-1.5"></i> October 25, 2026</span>
+                        </div>
+                        <h3 class="font-extrabold text-white text-base sm:text-lg mb-2">Bi-Weekly Sunday Assessment Guidelines</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Sunday tests will be conducted for 2 hours (10:00 AM to 12:00 PM). Question papers and answer keys will be uploaded in the 'Tests & Question Papers' tab immediately after evaluation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 border-t border-slate-800 mt-16 py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-left space-y-1">
+                    <div class="font-extrabold text-white text-base">Aetheris Academy by Skylinesyntax Enterprises</div>
+                    <div class="text-xs text-slate-400">Empowering B.Sc. Nursing Students with Excellence in Education & Clinical Mastery.</div>
+                </div>
+                <div class="flex items-center space-x-3 bg-slate-800/80 px-5 py-3 rounded-2xl border border-slate-700 shadow-inner">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-phone text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Query Helpline</div>
+                        <a href="tel:+917626915690" class="text-white font-extrabold text-sm hover:text-blue-400 transition">+91 7626915690</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const UNIVERSAL_PASSWORD = "nursing2026";
+
+        const masterSchedule = [
+            { date: "2026-11-02", day: "Monday", subject: "Anatomy & Physiology", topic: "Endocrine System: Hypothalamus, Pineal Gland, Pituitary gland", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-03", day: "Tuesday", subject: "English", topic: "Unit III: Attentive Listening in hypothetical situations, announcements", hours: "1 hr", type: "Practice" },
+            { date: "2026-11-04", day: "Wednesday", subject: "Anatomy & Physiology", topic: "Endocrine System: Thyroid, Parathyroid, Thymus", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-05", day: "Thursday", subject: "Sociology", topic: "Social Organization: Meaning, elements and types", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-06", day: "Friday", subject: "Anatomy & Physiology", topic: "Endocrine System: Pancreas and Adrenal glands", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-07", day: "Saturday", subject: "Holiday", topic: "Diwali Festival Holiday (No Classes)", hours: "0 hr", type: "Festival" },
+            { date: "2026-11-08", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-08)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-11-09", day: "Monday", subject: "Anatomy & Physiology", topic: "Sensory Organs: Structure of skin and eye", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-10", day: "Tuesday", subject: "English", topic: "Unit IV: Speaking - Conversation situations (informal, formal)", hours: "1 hr", type: "Practice" },
+            { date: "2026-11-11", day: "Wednesday", subject: "Anatomy & Physiology", topic: "Sensory Organs: Structure of ear, nose and tongue", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-12", day: "Thursday", subject: "Sociology", topic: "Voluntary associations & Social system (definition, role, status)", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-13", day: "Friday", subject: "Anatomy & Physiology", topic: "Sensory Organs: Application and implications in nursing", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-14", day: "Saturday", subject: "Anatomy & Physiology", topic: "Musculoskeletal System: Anatomical positions & bones types", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-15", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-15)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-11-16", day: "Monday", subject: "Anatomy & Physiology", topic: "Musculoskeletal System: Structure, growth and ossification", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-17", day: "Tuesday", subject: "English", topic: "Unit IV: Greetings, introductions, requesting, asking/giving permission", hours: "1 hr", type: "Practice" },
+            { date: "2026-11-18", day: "Wednesday", subject: "Anatomy & Physiology", topic: "Musculoskeletal System: Axial and appendicular skeleton", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-19", day: "Thursday", subject: "Sociology", topic: "Social control: meaning, aims and process; Social norms", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-20", day: "Friday", subject: "Anatomy & Physiology", topic: "Musculoskeletal System: Joints - classification & major joints", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-21", day: "Saturday", subject: "Anatomy & Physiology", topic: "Musculoskeletal System: Application and implications in nursing", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-22", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-22)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-11-23", day: "Monday", subject: "Anatomy & Physiology", topic: "Muscular System: Types and structure of muscles", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-24", day: "Tuesday", subject: "Holiday", topic: "Guru Nanak Jayanti Festival Holiday (No Classes)", hours: "0 hr", type: "Festival" },
+            { date: "2026-11-25", day: "Wednesday", subject: "Anatomy & Physiology", topic: "Muscular System: Muscle groups of head, neck, thorax, abdomen", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-26", day: "Thursday", subject: "Sociology", topic: "Social disorganization: definition, causes, control and planning", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-27", day: "Friday", subject: "Anatomy & Physiology", topic: "Principal muscles: deltoid, biceps, triceps, respiratory", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-28", day: "Saturday", subject: "Anatomy & Physiology", topic: "Major muscles involved in nursing procedures & application", hours: "1 hr", type: "Lecture" },
+            { date: "2026-11-29", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-11-29)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-11-30", day: "Monday", subject: "Anatomy & Physiology", topic: "Renal System: Structure of kidney, ureters, bladder, urethra", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-01", day: "Tuesday", subject: "Anatomy & Physiology", topic: "Renal System: Application and implication in nursing", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-02", day: "Wednesday", subject: "Anatomy & Physiology", topic: "Reproductive System: Structure of male & female organs", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-03", day: "Thursday", subject: "Anatomy & Physiology", topic: "Reproductive System: Structure of breast and nursing implications", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-04", day: "Friday", subject: "Anatomy & Physiology", topic: "Nervous System: Review of neurons, CNS, ANS, and PNS", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-05", day: "Saturday", subject: "Anatomy & Physiology", topic: "Nervous System: Structure of brain, spinal cord, cranial nerves", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-06", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-06)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-12-07", day: "Monday", subject: "Anatomy & Physiology", topic: "Nervous System: Peripheral nerves, cerebral cortex functional areas", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-08", day: "Tuesday", subject: "Anatomy & Physiology", topic: "Nervous System: Ventricular system (formation, circulation)", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-09", day: "Wednesday", subject: "English", topic: "Unit IV: Asking for information, giving instructions, directions", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-10", day: "Thursday", subject: "English", topic: "Unit IV: Agreeing/disagreeing, describing people, places, events", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-11", day: "Friday", subject: "English", topic: "Unit IV: Complaints, suggestions, telephone conversations", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-12", day: "Saturday", subject: "English", topic: "Unit IV: Talking to patients, doctor/nurse rounds, handoffs", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-13", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-13)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-12-14", day: "Monday", subject: "English", topic: "Unit V: Reading strategies, reading notes, messages, articles", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-15", day: "Tuesday", subject: "English", topic: "Unit V: Medical vocabulary, abbreviations, visuals & graphs", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-16", day: "Wednesday", subject: "English", topic: "Unit V: Patient documents, doctor's prescription of care", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-17", day: "Thursday", subject: "English", topic: "Unit V: Remedial grammar, spotting errors, grammar interpretation", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-18", day: "Friday", subject: "English", topic: "Unit VII: Combining LSRW skills - critical thinking, oral reports", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-19", day: "Saturday", subject: "English", topic: "Unit III: Attentive Listening in hypothetical situations, announcements", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-20", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-20)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-12-21", day: "Monday", subject: "English", topic: "Unit IV: Speaking - Conversation situations (informal, formal)", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-22", day: "Tuesday", subject: "English", topic: "Unit IV: Greetings, introductions, requesting, asking/giving permission", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-23", day: "Wednesday", subject: "English", topic: "Unit IV: Asking for information, giving instructions, directions", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-24", day: "Thursday", subject: "Holiday", topic: "Christmas Eve Holiday Break", hours: "0 hr", type: "Festival" },
+            { date: "2026-12-25", day: "Friday", subject: "Holiday", topic: "Christmas Day Festival Holiday (No Classes)", hours: "0 hr", type: "Festival" },
+            { date: "2026-12-26", day: "Saturday", subject: "English", topic: "Unit IV: Agreeing/disagreeing, describing people, places, events", hours: "1 hr", type: "Practice" },
+            { date: "2026-12-27", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2026-12-27)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2026-12-28", day: "Monday", subject: "Psychology", topic: "Cognitive processes: Attention (types, determinants, alterations)", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-29", day: "Tuesday", subject: "Psychology", topic: "Cognitive processes: Perception (meaning, principles, factors)", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-30", day: "Wednesday", subject: "Psychology", topic: "Cognitive processes: Intelligence (heredity/environment, tests)", hours: "1 hr", type: "Lecture" },
+            { date: "2026-12-31", day: "Thursday", subject: "Psychology", topic: "Cognitive processes: Learning (definition, types, habit formation)", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-01", day: "Friday", subject: "Holiday", topic: "New Year's Day Festival Holiday (No Classes)", hours: "0 hr", type: "Festival" },
+            { date: "2027-01-02", day: "Saturday", subject: "Psychology", topic: "Cognitive processes: Thinking (levels, reasoning, problem solving)", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-03", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2027-01-03)", hours: "2 hr", type: "Test & Doubt" },
+            { date: "2027-01-04", day: "Monday", subject: "Psychology", topic: "Cognitive processes: Aptitude (concept, types, individual differences)", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-05", day: "Tuesday", subject: "Psychology", topic: "Application of Soft Skills: Concept, types (visual, aural)", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-06", day: "Wednesday", subject: "Psychology", topic: "Soft Skills: Interpersonal Relationships (IPR), barriers, strategies", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-07", day: "Thursday", subject: "Psychology", topic: "Soft Skills: Survival strategies (time management, stress coping)", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-08", day: "Friday", subject: "Psychology", topic: "Soft Skills at workplace: Presentation skills, etiquette, teamwork", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-09", day: "Saturday", subject: "Psychology", topic: "Self-Empowerment: Dimensions, women's empowerment, grooming", hours: "1 hr", type: "Lecture" },
+            { date: "2027-01-10", day: "Sunday", subject: "Assessment / Doubt", topic: "Sunday Review, Quiz & Doubt Clearing Session (Week ending 2027-01-10)", hours: "2 hr", type: "Test & Doubt" }
+        ];
+
+        function formatDateString(dateObj) {
+            const yyyy = dateObj.getFullYear();
+            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dateObj.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        function loadDynamicScheduleWidgets() {
+            let todayObj = new Date();
+            let todayStr = formatDateString(todayObj);
+            
+            // Real-Time Date Matching against masterSchedule
+            let todayClass = masterSchedule.find(item => item.date === todayStr);
+            
+            if (!todayClass) {
+                if (todayStr < "2026-11-02") {
+                    todayClass = {
+                        date: todayStr,
+                        day: "Pre-Semester",
+                        subject: "Semester Starts Nov 2, 2026",
+                        topic: "Get ready for B.Sc. Nursing 2nd Semester. Classes begin soon.",
+                        hours: "0 hr",
+                        type: "Preparation"
+                    };
+                } else if (todayStr > "2027-01-10") {
+                    todayClass = {
+                        date: todayStr,
+                        day: "Ended",
+                        subject: "Semester Completed",
+                        topic: "All classes and examinations for 2nd Semester have concluded.",
+                        hours: "0 hr",
+                        type: "Completed"
+                    };
+                } else {
+                    todayClass = {
+                        date: todayStr,
+                        day: "Break / Self-Study",
+                        subject: "No Class Scheduled Today",
+                        topic: "Review your notes, complete assignments, or prepare for upcoming assessments.",
+                        hours: "0 hr",
+                        type: "Self Study"
+                    };
+                }
+            }
+
+            let tomorrowObj = new Date(todayObj);
+            tomorrowObj.setDate(todayObj.getDate() + 1);
+            let tomorrowStr = formatDateString(tomorrowObj);
+
+            let tomorrowClass = masterSchedule.find(item => item.date === tomorrowStr) || {
+                date: tomorrowStr,
+                day: "Scheduled",
+                subject: "Scheduled Study / Holiday",
+                topic: "Check master schedule table below for full breakdown.",
+                hours: "1 hr",
+                type: "Scheduled"
+            };
+
+            const upcomingTest = masterSchedule.find(item => item.date >= todayStr && (item.subject.includes("Test") || item.subject.includes("Assessment") || item.type.includes("Test"))) || {
+                date: "2026-11-08",
+                subject: "Endocrine & Listening Skills Unit Test",
+                topic: "Bi-Weekly Sunday Assessment"
+            };
+
+            // Render Today
+            document.getElementById('todayDate').innerText = todayStr;
+            document.getElementById('todaySubject').innerText = todayClass.subject;
+            document.getElementById('todayTopic').innerText = todayClass.topic;
+            document.getElementById('todayHours').innerHTML = `<i class="fa-solid fa-clock mr-1 text-blue-400"></i> ${todayClass.hours}`;
+            document.getElementById('todayType').innerText = todayClass.type;
+
+            // Render Tomorrow
+            document.getElementById('tomorrowDate').innerText = tomorrowStr;
+            document.getElementById('tomorrowSubject').innerText = tomorrowClass.subject;
+            document.getElementById('tomorrowTopic').innerText = tomorrowClass.topic;
+            document.getElementById('tomorrowHours').innerHTML = `<i class="fa-solid fa-clock mr-1 text-indigo-400"></i> ${tomorrowClass.hours}`;
+            document.getElementById('tomorrowType').innerText = tomorrowClass.type;
+
+            // Render Upcoming Test
+            document.getElementById('testTitle').innerText = upcomingTest.subject;
+            document.getElementById('testDesc').innerText = upcomingTest.topic;
+            document.getElementById('testDate').innerHTML = `<i class="fa-regular fa-calendar mr-1 text-emerald-400"></i> ${upcomingTest.date}`;
+            
+            const testDateObj = new Date(upcomingTest.date);
+            const diffTime = testDateObj - todayObj;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('testDaysLeft').innerText = diffDays >= 0 ? `In ${diffDays} day(s)` : "Today!";
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            const errorDiv = document.getElementById('loginError');
+
+            if (password === UNIVERSAL_PASSWORD) {
+                document.getElementById('displayUsername').innerHTML = `<i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> <span>${username || "Student"}</span>`;
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('mainPortal').classList.remove('hidden');
+                localStorage.setItem('aetheris_user', username);
+                loadDynamicScheduleWidgets();
+            } else {
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('aetheris_user');
+            document.getElementById('mainPortal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('passwordInput').value = '';
+        }
+
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(el => {
+                el.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/20');
+                el.classList.add('text-slate-300', 'hover:bg-slate-800/80');
+            });
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-800/80');
+            activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/20');
+        }
+
+        window.onload = function() {
+            const savedUser = localStorage.getItem('aetheris_user');
+            if (savedUser) {
+                document.getElementById('displayUsername').innerHTML = `<i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> <span>${savedUser}</span>`;
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('mainPortal').classList.remove('hidden');
+                loadDynamicScheduleWidgets();
+            }
+        }
+    </script>
+</body>
+</html>
